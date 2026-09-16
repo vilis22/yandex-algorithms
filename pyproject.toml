@@ -8,8 +8,5 @@ dependencies = [
     "ruff>=0.16.7",
 ]
 
-[dependency-groups]
-dev = []
-
 [tool.ruff]
 line-length = 120
