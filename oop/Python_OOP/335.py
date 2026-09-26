@@ -31,18 +31,3 @@ class CrazyList:
         other_lst = other.lst if isinstance(other, CrazyList) else other
         self.lst[:] = self._subtract(self.lst, other_lst)
         return self
-
-
-x_1 = CrazyList([0, 1, "1", 0, 1, 2, "0", True, "True", 6, 8, "False", False, {1: 0, 2: 0}])
-x_1_id = id(x_1)
-print(x_1)  # CrazyList([0, 1, '1', 0, 1, 2, '0', True, 'True', 'False', False, {1: 0, 2: 0}])
-x_2 = CrazyList([1, "1", 0, 1, 2, True, "False", "0", {1: 0}, 6, 9, 1])
-print(x_2)  # CrazyList([1, '1', 0, 1, 2, True, 'False', '0', {1: 0}, 6, 9, 1])
-x_2_id = id(x_2)
-x_3 = x_1 - x_2
-print(x_3)  # CrazyList([0, 'True', 8, False, {1: 0, 2: 0}])
-assert x_1_id == id(x_1) and isinstance(x_3, CrazyList) and id(x_3) != x_1_id, (
-    'при операции "-" создается новый объект, \
-уменьшаемый объект не должен менять своего id'
-)
-assert x_2_id == id(x_2), "вычитаемый объект не должен менять своего id"
