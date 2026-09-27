@@ -1,17 +1,31 @@
 class Descriptor:
     def __set_name__(self, owner, name):
-        self.private_name = f"_{owner.__name__}__{name}"
+        self.name = f"_{owner.__name__}__{name}"
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        return instance.__dict__.get(self.private_name, [])
+
+        return getattr(instance, self.name)
 
     def __set__(self, instance, value):
         if len(value) > 10:
             raise TypeError("Низзяяя!!!")
 
-        instance.__dict__[self.private_name] = value
+        setattr(instance, self.name, value)
+
+
+class Decorator:
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        result = self.func(*args, **kwargs)
+
+        if len(args[0].carriages) > 10:
+            raise TypeError("Мистер декоратор против!!!")
+
+        return result
 
 
 class CrazyTrain:
@@ -21,14 +35,13 @@ class CrazyTrain:
         self.carriages = carriages
 
     def __iadd__(self, other):
-        self.carriages.extend(other.carriages)
+        self.__carriages.extend(other.carriages)
         return self
 
 
-lst = [["тушенка из Василия"], ["крыжовник"], ["морковный треш"], ["шерстяные лужи"], ["сонный димдимыч"]]
-crazy_tr = CrazyTrain(lst)
+train1 = CrazyTrain([[1], [2], [1], [2], [1], [2], [1], [2], [1], [2]])
+train2 = CrazyTrain([[3]])
 
-print(crazy_tr.__dict__)
-print(crazy_tr.carriages)
-del crazy_tr._CrazyTrain__carriages
-print(crazy_tr.__dict__)
+train1 += train2
+
+print(train1.carriages)
