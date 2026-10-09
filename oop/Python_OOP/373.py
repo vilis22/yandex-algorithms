@@ -3,57 +3,33 @@ from typing import Any, Self
 
 class Pizza:
     def __init__(self, pieces: int) -> None:
-        self._validate(pieces)
         self._pieces = [pieces]
 
-    def _validate(self, pieces: Any) -> None:
-        if not (isinstance(pieces, int) and 0 <= pieces <= 8):
+    @staticmethod
+    def _validate(value: Any) -> None:
+        if not isinstance(value, list) or len(value) != 1:
             raise TypeError("Низзяяя!!!")
+
+        piece = value[0]
+
+        if not isinstance(piece, int) or isinstance(piece, bool) or not 0 <= piece <= 8:
+            raise TypeError("Низзяяя!!!")
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "_pieces":
+            self._validate(value)
+
+        super().__setattr__(name, [value[0]])
 
     def __ior__(self, other: int) -> Self:
-        if not isinstance(other, int):
+        if not isinstance(other, int) or isinstance(other, bool):
             raise TypeError("Низзяяя!!!")
 
-        self._validate(self._pieces[0] + other)
-        self._pieces[0] += other
+        new_value = self._pieces[0] + other
+        self._validate([new_value])
+
+        self._pieces[0] = new_value
         return self
 
     def __bool__(self) -> bool:
         return self._pieces != [0]
-
-
-pizza = Pizza(0)
-print(pizza.__dict__)
-
-try:
-    pizza = Pizza('0')
-except TypeError as e:
-    print(e)
-
-try:
-    pizza._pieces = []
-except TypeError as e:
-    print(e)
-
-try:
-    pizza.__setattr__('_pieces', {})
-except TypeError as e:
-    print(e)
-
-pizza |= 1
-print(pizza._pieces)
-
-pizza |= 3
-print(pizza._pieces)
-
-try:
-    pizza |= '4'
-except TypeError as e:
-    print(e)
-
-print(bool(pizza))
-pizza |= 3
-print(pizza._pieces, bool(pizza))
-
-pizza = Pizza(0)
-print(bool(pizza))
